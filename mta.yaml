@@ -11,7 +11,7 @@ build-parameters:
       commands:
         - npm ci
         - npx cds build --production
-        - mkdir -p resources  
+        - mkdir -p resources
 modules:
   - name: incident-management-srv
     type: nodejs
@@ -98,6 +98,21 @@ modules:
               ServiceKeyName: incident-management-auth-key
               sap.cloud.service: incidentmanagement.service
 
+  - name: incident-management-app-deployer
+    type: com.sap.application.content
+    path: gen
+    requires:
+      - name: incident-management-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: app/
+      requires:
+        - name: incidentmanagementincidents
+          artifacts:
+            - incidents.zip
+          target-path: app/
+
 resources:
   - name: incident-management-db
     type: com.sap.xs.hdi-container
@@ -148,4 +163,3 @@ resources:
           name: srv-api # must be used in xs-app.json as well
           url: ~{srv-url}
           forwardAuthToken: true
-
